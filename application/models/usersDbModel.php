@@ -72,13 +72,13 @@ class Models_usersDbModel
 			  FROM users
 			  INNER JOIN cities ON
 					users.cities_idcity=cities.idcity;";
-		$arrayUsers=$this->query($sql);
+		$arrayUsers=$this->cnx->query($sql);
 		foreach($arrayUsers as $key => $user)
 		{
 			$arrayUsers[$key]['pets']=implode(',',
-										readUserPets($user['iduser'], $cnx));
+										$this->readUserPets($user['iduser']));
 			$arrayUsers[$key]['languages']=implode(',',
-										readUserLanguages($user['iduser'], $cnx));
+										$this->readUserLanguages($user['iduser']));
 		}
 		
 		return $arrayUsers;
@@ -94,7 +94,7 @@ class Models_usersDbModel
 				LEFT JOIN pets
 				ON users_has_pets.pets_idpet=pets.idpet
 				WHERE iduser=".$id;
-		$arrayPets=$this->query($sql);
+		$arrayPets=$this->cnx->query($sql);
 		foreach ($arrayPets as $pet)
 		$pets[]=$pet['pet'];
 		
@@ -110,7 +110,7 @@ class Models_usersDbModel
 				LEFT JOIN languages
 				ON users_has_languages.languages_idlanguage=languages.idlanguage
 				WHERE iduser=".$id;
-		$arrayLanguages=$this->query($sql);
+		$arrayLanguages=$this->cnx->query($sql);
 		foreach ($arrayLanguages as $language)
 			$languages[]=$language['language'];
 		
@@ -120,7 +120,7 @@ class Models_usersDbModel
 	public function readUser($id)
 	{
 		$sql="SELECT * FROM users WHERE iduser=".$id;
-		$arrayUser=$this->query($sql);
+		$arrayUser=$this->cnx->query($sql);
 		
 		return $arrayUser[0];
 	}
@@ -136,9 +136,9 @@ class Models_usersDbModel
 				coders = '".$arrayData['coder']."',
 				photo = '".$imageName."'
 			";
-		$this->query($sql);
+		$this->cnx->query($sql);
 		$sql="SELECT LAST_INSERT_ID() as id";
-		$array=$this->query($sql);
+		$array=$this->cnx->query($sql);
 		$id=$array[0]['id'];
 		
 		foreach($arrayData['pets'] as $pets)
@@ -146,7 +146,7 @@ class Models_usersDbModel
 			$sql="INSERT INTO users_has_pets SET
 					users_iduser=".$id.",
 					pets_idpet=".$pets['id'];
-			$this->query($sql);
+			$this->cnx->query($sql);
 		}
 		
 		foreach($arrayData['languages'] as $languages)
@@ -154,7 +154,7 @@ class Models_usersDbModel
 			$sql="INSERT INTO users_has_languages SET
 					users_iduser=".$id.",
 					languages_idlanguage=".$languages['id'];
-			$this->query($sql);
+			$this->cnx->query($sql);
 		}
 		
 		
@@ -178,14 +178,14 @@ class Models_usersDbModel
 	{
 		$sql="SELECT idpet AS id, pet AS value
 			FROM pets";
-		$arrayPets=$this->query($sql);
+		$arrayPets=$this->cnx->query($sql);
 		return $arrayPets;
 	}
 	public function readLanguages()
 	{
 		$sql="SELECT idlanguage AS id, language AS value
 			FROM languages";
-		$arrayLanguages=$this->query($sql);
+		$arrayLanguages=$this->cnx->query($sql);
 		return $arrayLanguages;
 	}
 	public function readCoders()
@@ -194,14 +194,14 @@ class Models_usersDbModel
 		
 		$sql="SELECT coder AS id, coder AS value
 			FROM coders";
-		$arrayCoders=$this->query($sql);
+		$arrayCoders=$this->cnx->query($sql);
 		return $arrayCoders;
 	}
 	public function readCities()
 	{
 		$sql="SELECT idcity AS id, city AS value
 			FROM cities";
-		$arrayCities=$this->query($sql);
+		$arrayCities=$this->cnx->query($sql);
 		return $arrayCities;
 	}
 	

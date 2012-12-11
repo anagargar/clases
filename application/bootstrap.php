@@ -16,7 +16,7 @@ class Application_bootstrap
 		$this->_initDb();
 		$this->_initRequest();
 		$this->_initDefaultRol();
-		$this->_initAcl();
+// 		$this->_initAcl();
 		Models_debugModel::_debug($_SESSION);
 		
 
@@ -61,7 +61,13 @@ class Application_bootstrap
 	
 	public function run()
 	{
-		include("../application/controllers/".$this->request['controller'].".php");		
+		Models_debugModel::_debug($this->request);
+		include("../application/controllers/".$this->request['controller'].".php");
+		$class=$this->request['controller']."Controller";
+		$method = $this->request['action']."Action";
+		$obj = new $class($this->config);
+		$obj->$method();
+				
 	}
 }
 
